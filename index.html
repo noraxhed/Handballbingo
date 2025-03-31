@@ -11,51 +11,48 @@
   <title>DAS Handball-Bingo</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #f9f9f9;
-      padding: 1rem;
-    }
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  max-width: 100%;
+}
 
-    select {
-      font-size: 1rem;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-    }
+select {
+  font-size: 1rem;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  max-width: 90vw;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 5px;
-      width: min(90vmin, 500px);
-      height: min(90vmin, 500px);
-    }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  width: min(90vmin, 500px);
+  margin: 0 auto;
+}
 
-    .cell {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      border: 1px solid #ccc;
-      background-color: #f4f4f4;
-      cursor: pointer;
-      font-size: calc(2vmin + 6px);
-      box-sizing: border-box;
-      overflow-wrap: break-word;
-      aspect-ratio: 1 / 1;
-      padding: 0.5rem;
-    }
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 1px solid #ccc;
+  background-color: #f4f4f4;
+  cursor: pointer;
+  font-size: calc(2vmin + 6px);
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  aspect-ratio: 1 / 1;
+  padding: 0.5rem;
+}
 
-    .cell.active {
-      background-color: #4caf50;
-      color: white;
-    }
+.cell.active {
+  background-color: #4caf50;
+  color: white;
+}
   </style>
 </head>
 <body>
