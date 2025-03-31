@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DAS Handball-Bingo</title>
   <style>
     body {
@@ -17,14 +17,18 @@
       background-color: #f9f9f9;
     }
 
+    select {
+      font-size: 1rem;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(4, 1fr);
       gap: 5px;
       width: min(90vmin, 500px);
       height: min(90vmin, 500px);
-      margin: 0 auto;
     }
 
     .cell {
@@ -38,7 +42,6 @@
       font-size: calc(2vmin);
       box-sizing: border-box;
       overflow-wrap: break-word;
-      word-wrap: break-word;
       aspect-ratio: 1 / 1;
     }
 
@@ -50,47 +53,113 @@
 </head>
 <body>
   <h1>DAS Handball-Bingo</h1>
+  <p>Wähle die Liga:</p>
+  <select id="leagueSelect">
+    <option value="1. Bundesliga">1. Bundesliga</option>
+    <option value="2. Bundesliga">2. Bundesliga</option>
+    <option value="3. Liga">3. Liga</option>
+    <option value="Regionalliga">Regionalliga</option>
+    <option value="Oberliga">Oberliga</option>
+    <option value="Verbandsliga">Verbandsliga</option>
+    <option value="Bezirksliga">Bezirksliga</option>
+    <option value="Kreisliga">Kreisliga</option>
+    <option value="Kreisklasse">Kreisklasse</option>
+  </select>
+
   <p>Klick auf die Felder, um sie abzustreichen!</p>
   <div class="grid" id="bingoGrid"></div>
-  <p class="note">Ein Klick markiert das Feld, ein zweiter Klick hebt es wieder auf. Sollte es Uneinigkeit beim Abstreichen geben, besprecht es gemeinsam in der Gruppe.</p>
+  <p class="note">Ein Klick markiert das Feld, ein zweiter hebt es wieder auf. Uneinig? Redet miteinander!</p>
+
   <script>
-    const phrases = [
-      "Wir brauchen 100% 💯",
-      "Jetzt werdet mal wach! 🔔",
-      "Ruhig/-er! 🤫",
-      "Ihr müsst mehr reden! 🗣️",
-      "Arme! 💪",
-      "Taktisch ungünstige Auszeit ⏱️",
-      "Gelbe Karte wegen Meckern 🟨",
-      "Der nächste geht rein! 🎯",
-      "Schlägt die Hände über dem Kopf zusammen 🤦",
-      "Wildes Rumgestöhne 😤",
-      "Über den Schiri meckern 🙄",
-      "Schnelle Beine/Füße 🏃‍♂️",
-      "Verschieben! 🔄",
-      "Schiri 👋",
-      "Bonusfeld 🎉",
-      "Selber!🙋🏻‍♀️",
-      "Kopf hoch ✊",
-      "Mehr in die Nahtstellen/Tiefe ➡️",
-      "Ruft Zeit rein ⌛",
-      "Katastrophe 🚨",
-      "Raus! / Vor! 🏁"
-    ];
+    const phrasesByGroup = {
+      bundesliga: [
+        "Kempa-Tor 💥",
+        "Rückraumhammer 🧨",
+        "Perfekte Abwehrrotation 🔄",
+        "Torwart-Parade 🧤",
+        "Taktikbesprechung 🤔",
+        "Strafwurf mit Dreher 🎯",
+        "Videobeweis 🎥",
+        "Tor in letzter Sekunde ⌛",
+        "Fangesänge 🎶",
+        "Trainer nimmt Auszeit ⏸️",
+        "Blockmonster 🙅",
+        "Handspiel Diskussion 🤷‍♂️",
+        "Fliegender Wechsel 🔁",
+        "TV-Zeitlupe 📺",
+        "7-Meter wird gehalten 🧱",
+        "Bonusfeld 🎉"
+      ],
+      regionalliga: [
+        "Rückraumfackel X",
+        "Gelbe Karte wegen Meckern 🟨",
+        "Heber 🎯",
+        "Spieler bleibt liegen 🚨",
+        "Torwart redet laut 🧤🗣️",
+        "Tor nach unter 1 Minute ⏱️",
+        "Tempogegenstoß ⌛",
+        "Selber!🙋🏻‍♀️",
+        "Kopf hoch ✊",
+        "Über den Schiri meckern 🙄",
+        "Wurf sehr weit übers Tor 🤦",
+        "Trainer schreit rum 😡",
+        "Klassischer Kreisanspiel 💡",
+        "Zu viele Schritte 🚶",
+        "Wurf an den Pfosten 🥴",
+        "Bonusfeld 🎉"
+      ],
+      kreisklasse: [
+        "Ball fällt beim Einwurf runter 😬",
+        "Torwart ohne Schuhe 🧦",
+        "Wurf aus dem Stand 🪵",
+        "Dreher klappt nicht 😵",
+        "Trainer spielt mit 🙋‍♂️",
+        "Wechsel zu sechst 😅",
+        "Alle laufen gleichzeitig 😵‍💫",
+        "Wurf geht über Hallendach 🏗️",
+        "Tempogegenstoß stolpert 🫠",
+        "Spieler schreien sich an 😤",
+        "Pfeife vom Schiri geht nicht 🔇",
+        "Kreis übertritt nicht gesehen 👀",
+        "Wurf mit beiden Füßen am Boden 🐘",
+        "Fan ruft 'Schiri Brille!' 🤓",
+        "Eins gegen Null wird verworfen 🤯",
+        "Bonusfeld 🎉"
+      ]
+    };
+
+    const leagueToGroup = {
+      "1. Bundesliga": "bundesliga",
+      "2. Bundesliga": "bundesliga",
+      "3. Liga": "bundesliga",
+      "Regionalliga": "regionalliga",
+      "Oberliga": "regionalliga",
+      "Verbandsliga": "regionalliga",
+      "Bezirksliga": "kreisklasse",
+      "Kreisliga": "kreisklasse",
+      "Kreisklasse": "kreisklasse"
+    };
 
     const grid = document.getElementById('bingoGrid');
-    const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
+    const leagueSelect = document.getElementById('leagueSelect');
 
-    shuffled.forEach((phrase) => {
-      const cell = document.createElement('div');
-      cell.className = 'cell';
-      cell.textContent = phrase;
-      cell.addEventListener('click', () => {
-        cell.classList.toggle('active');
-        checkBingo();
+    function renderGrid(league) {
+      const group = leagueToGroup[league];
+      const phrases = phrasesByGroup[group];
+      const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
+
+      grid.innerHTML = '';
+      shuffled.forEach((phrase) => {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.textContent = phrase;
+        cell.addEventListener('click', () => {
+          cell.classList.toggle('active');
+          checkBingo();
+        });
+        grid.appendChild(cell);
       });
-      grid.appendChild(cell);
-    });
+    }
 
     function checkBingo() {
       const cells = Array.from(document.querySelectorAll('.cell'));
@@ -118,6 +187,14 @@
         }
       }
     }
+
+    // Initial load
+    renderGrid(leagueSelect.value);
+
+    // Event listener
+    leagueSelect.addEventListener('change', (e) => {
+      renderGrid(e.target.value);
+    });
   </script>
 </body>
 </html>
