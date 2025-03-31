@@ -77,9 +77,6 @@
   <div class="grid" id="bingoGrid"></div>
   <p class="note">Ein Klick markiert das Feld, ein zweiter hebt es wieder auf. Uneinig? Redet miteinander!</p>
 
-  <!-- Glückwunschbild -->
-  <img id="bingoWinImage" src="bingo-gewonnen.png" alt="Herzlichen Glückwunsch!" style="display:none; max-width:80%; margin-top:2rem; border-radius:1rem; box-shadow:0 0 10px rgba(0,0,0,0.2);">
-
   <!-- Spendenhinweis -->
   <div id="donationPrompt" style="display:none; margin-top: 1rem;">
     <p style="font-size: 1rem;">💚 Du hast Bingo geschafft! Wenn du DAS Handball-Bingo magst, kannst du das Projekt freiwillig unterstützen:</p>
@@ -167,7 +164,6 @@
       const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
 
       grid.innerHTML = '';
-      document.getElementById('bingoWinImage').style.display = 'none';
       document.getElementById('donationPrompt').style.display = 'none';
 
       shuffled.forEach((phrase) => {
@@ -203,7 +199,6 @@
         if (pattern.every(index => activeCells.includes(index))) {
           const confirmBingo = confirm("Bingo erkannt! Bist du dir sicher?");
           if (confirmBingo) {
-            document.getElementById('bingoWinImage').style.display = 'block';
             document.getElementById('donationPrompt').style.display = 'block';
           }
           break;
