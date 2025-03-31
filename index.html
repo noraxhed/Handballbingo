@@ -46,7 +46,7 @@
       border: 1px solid #ccc;
       background-color: #f4f4f4;
       cursor: pointer;
-      font-size: calc(2vmin); /* <- Zurückgesetzt wie im alten Bingo */
+      font-size: calc(2vmin);
       box-sizing: border-box;
       overflow-wrap: break-word;
       aspect-ratio: 1 / 1;
@@ -79,12 +79,12 @@
   <p class="note">Ein Klick markiert das Feld, ein zweiter hebt es wieder auf. Uneinig? Redet miteinander!</p>
 
   <!-- Immer sichtbarer Spendenhinweis -->
-<div style="margin-top: 2rem;">
-  <p style="font-size: 1rem;">💚 Dir gefällt DAS Handball-Bingo?<br>Dann unterstütze das Projekt freiwillig und halte es am Leben:</p>
-  <a href="https://www.paypal.me/Noraxhed" target="_blank" style="display:inline-block; margin-top:0.5rem; padding:0.5rem 1rem; background-color:#4caf50; color:white; text-decoration:none; border-radius:5px;">
-    💸 Jetzt unterstützen
-  </a>
-</div>
+  <div style="margin-top: 2rem;">
+    <p style="font-size: 1rem;">💚 Dir gefällt DAS Handball-Bingo?<br>Dann unterstütze das Projekt freiwillig und halte es am Leben:</p>
+    <a href="https://www.paypal.me/Noraxhed" target="_blank" style="display:inline-block; margin-top:0.5rem; padding:0.5rem 1rem; background-color:#4caf50; color:white; text-decoration:none; border-radius:5px;">
+      💸 Jetzt unterstützen
+    </a>
+  </div>
 
   <script>
     const phrasesByGroup = {
@@ -165,7 +165,6 @@
       const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
 
       grid.innerHTML = '';
-      document.getElementById('donationPrompt').style.display = 'none';
 
       shuffled.forEach((phrase) => {
         const cell = document.createElement('div');
@@ -200,7 +199,7 @@
         if (pattern.every(index => activeCells.includes(index))) {
           const confirmBingo = confirm("Bingo erkannt! Bist du dir sicher?");
           if (confirmBingo) {
-            document.getElementById('donationPrompt').style.display = 'block';
+            alert("🎉 Bingo! Herzlichen Glückwunsch!");
           }
           break;
         }
