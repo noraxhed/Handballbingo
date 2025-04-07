@@ -28,19 +28,39 @@
       text-align: center;
       margin: 0;
       padding: 1rem 5vw;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
       background-color: var(--primary-color);
       color: var(--text-color);
     }
 
-    select, input, button, textarea {
-      font-size: 1rem;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: #fff;
+      border-bottom: 1px solid #ccc;
+    }
+
+    #menuToggle {
+      font-size: 1.5rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    #navMenu {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      background-color: #fff;
+      border-top: 1px solid #ccc;
+      padding: 1rem 0;
+    }
+
+    #navMenu a {
+      margin: 0.5rem;
+      text-decoration: none;
+      color: var(--text-color);
     }
 
     .grid {
@@ -49,6 +69,7 @@
       gap: 5px;
       width: 100vw;
       max-width: 500px;
+      margin: auto;
     }
 
     .cell {
@@ -93,48 +114,73 @@
       margin-bottom: 1rem;
       font-size: 0.9rem;
     }
+
+    #infoSection, #contactSection {
+      display: none;
+      max-width: 500px;
+      margin: 2rem auto;
+    }
   </style>
 </head>
 <body>
-  <h1 id="headline">DAS Handball-Bingo</h1>
+  <header>
+    <h1 id="headline">DAS Handball-Bingo</h1>
+    <button id="menuToggle">☰</button>
+  </header>
+
+  <nav id="navMenu">
+    <a href="#" onclick="showSection('bingo')">🏠 Bingo</a>
+    <a href="#" onclick="showSection('info')">ℹ️ Über das Projekt</a>
+    <a href="#" onclick="showSection('contact')">✉️ Kontakt</a>
+  </nav>
+
   <img id="logo" src="" alt="Vereinslogo" />
 
-  <div>
-    <p>Wähle die Liga oder Vereinsbingo:</p>
-    <select id="leagueSelect" onchange="handleSelection()">
-      <option value="">Bitte wählen ...</option>
-      <option value="verein">🎽 Vereinsbingo</option>
-      <option value="1. Bundesliga">1. Bundesliga</option>
-      <option value="2. Bundesliga">2. Bundesliga</option>
-      <option value="3. Liga">3. Liga</option>
-      <option value="Regionalliga">Regionalliga</option>
-      <option value="Oberliga">Oberliga</option>
-      <option value="Verbandsliga">Verbandsliga</option>
-      <option value="Bezirksliga">Bezirksliga</option>
-      <option value="Kreisliga">Kreisliga</option>
-      <option value="Kreisklasse">Kreisklasse</option>
-    </select>
-    <div id="vereinInput" style="display:none;">
-      <input type="text" id="vereinCodeInput" placeholder="Vereinscode eingeben" oninput="renderClubGrid()" />
-      <select id="teamSelect" onchange="renderClubGrid()">
-        <option value="herren">Herren</option>
-        <option value="damen">Damen</option>
+  <div id="bingoSection">
+    <div>
+      <p>Wähle die Liga oder Vereinsbingo:</p>
+      <select id="leagueSelect" onchange="handleSelection()">
+        <option value="">Bitte wählen ...</option>
+        <option value="verein">🎽 Vereinsbingo</option>
+        <option value="1. Bundesliga">1. Bundesliga</option>
+        <option value="2. Bundesliga">2. Bundesliga</option>
+        <option value="3. Liga">3. Liga</option>
+        <option value="Regionalliga">Regionalliga</option>
+        <option value="Oberliga">Oberliga</option>
+        <option value="Verbandsliga">Verbandsliga</option>
+        <option value="Bezirksliga">Bezirksliga</option>
+        <option value="Kreisliga">Kreisliga</option>
+        <option value="Kreisklasse">Kreisklasse</option>
       </select>
-      <div id="vereinError"></div>
+      <div id="vereinInput" style="display:none;">
+        <input type="text" id="vereinCodeInput" placeholder="Vereinscode eingeben" oninput="renderClubGrid()" />
+        <select id="teamSelect" onchange="renderClubGrid()">
+          <option value="herren">Herren</option>
+          <option value="damen">Damen</option>
+        </select>
+        <div id="vereinError"></div>
+      </div>
+    </div>
+
+    <p>Klick auf die Felder, um sie abzustreichen!</p>
+    <div class="grid" id="bingoGrid"></div>
+
+    <div style="margin-top: 2rem;">
+      <p style="font-size: 1rem;">💚 Dir gefällt DAS Handball-Bingo?<br>Dann unterstütze das Projekt freiwillig und halte es am Leben:</p>
+      <a href="https://www.paypal.me/Noraxhed" target="_blank" class="donate-button">
+        💸 Jetzt unterstützen
+      </a>
     </div>
   </div>
 
-  <p>Klick auf die Felder, um sie abzustreichen!</p>
-  <div class="grid" id="bingoGrid"></div>
-
-  <div style="margin-top: 2rem;">
-    <p style="font-size: 1rem;">💚 Dir gefällt DAS Handball-Bingo?<br>Dann unterstütze das Projekt freiwillig und halte es am Leben:</p>
-    <a href="https://www.paypal.me/Noraxhed" target="_blank" class="donate-button">
-      💸 Jetzt unterstützen
-    </a>
+  <div id="infoSection">
+    <h2>Über das Projekt</h2>
+    <p>
+      DAS Handball-Bingo wurde entwickelt, um Handballspiele mit einem Augenzwinkern zu begleiten – ob von der Tribüne oder vom Spielfeldrand. Jede Liga und jeder Verein bringt seinen ganz eigenen Stil mit – und genau das bildet das Bingo ab. Wenn du Teil des Projekts werden willst, melde dich gern!
+    </p>
   </div>
 
-  <div style="margin-top: 3rem; max-width: 500px; width: 100%;">
+  <div id="contactSection">
     <h2>Kontaktformular</h2>
     <form action="https://formsubmit.co/handballbingo@gmail.com" method="POST">
       <input type="text" name="name" placeholder="Dein Name" required><br>
@@ -145,6 +191,51 @@
   </div>
 
   <script>
+    const bingoPatterns = [
+      [0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15],
+      [0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15],
+      [0, 5, 10, 15], [3, 6, 9, 12]
+    ];
+
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      const menu = document.getElementById('navMenu');
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    function showSection(section) {
+      document.getElementById('bingoSection').style.display = section === 'bingo' ? 'block' : 'none';
+      document.getElementById('infoSection').style.display = section === 'info' ? 'block' : 'none';
+      document.getElementById('contactSection').style.display = section === 'contact' ? 'block' : 'none';
+      document.getElementById('navMenu').style.display = 'none';
+    }
+
+    function createGrid(phrases) {
+      const grid = document.getElementById('bingoGrid');
+      grid.innerHTML = '';
+      const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
+      shuffled.forEach((phrase) => {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.textContent = phrase;
+        cell.addEventListener('click', () => {
+          cell.classList.toggle('active');
+          checkBingo();
+        });
+        grid.appendChild(cell);
+      });
+    }
+
+    function checkBingo() {
+      const cells = Array.from(document.querySelectorAll('.cell'));
+      const activeCells = cells.map((cell, i) => cell.classList.contains('active') ? i : null).filter(i => i !== null);
+      for (const pattern of bingoPatterns) {
+        if (pattern.every(index => activeCells.includes(index))) {
+          alert("🎉 Bingo erkannt! Glückwunsch! 🎉");
+          break;
+        }
+      }
+    }
+
     function renderClubGrid() {
       const code = document.getElementById('vereinCodeInput').value.trim().toUpperCase();
       const team = document.getElementById('teamSelect').value;
@@ -167,6 +258,26 @@
         errorDiv.textContent = "Verein nicht gefunden. Bitte Code prüfen.";
         document.getElementById('bingoGrid').innerHTML = "";
         document.getElementById('logo').style.display = 'none';
+      }
+    }
+
+    function renderStandardGrid() {
+      const league = document.getElementById('leagueSelect').value;
+      const group = leagueToGroup[league];
+      if (standardPhrases[group]) {
+        createGrid(standardPhrases[group]);
+      } else {
+        document.getElementById('bingoGrid').innerHTML = "";
+      }
+    }
+
+    function handleSelection() {
+      const value = document.getElementById('leagueSelect').value;
+      document.getElementById('vereinInput').style.display = value === 'verein' ? 'block' : 'none';
+      if (value && value !== 'verein') {
+        renderStandardGrid();
+        document.getElementById('logo').style.display = 'none';
+        document.getElementById('headline').textContent = "DAS Handball-Bingo";
       }
     }
   </script>
