@@ -192,6 +192,87 @@
   </div>
 
   <script>
+    const standardPhrases = {
+      "1. Bundesliga": [
+        "Kempa-Tor 💥", "Rückraumhammer 🧨", "Perfekte Abwehr 🔄", "Torwart-Parade 🧤",
+        "Fragwürdiges Abspiel 🤔", "Strafwurf mit Dreher 🎯", "Videobeweis 🎥", "Tor in letzter Sekunde ⌛",
+        "Fangesänge 🎶", "Trainer nimmt Auszeit ⏸️", "Blockmonster 🙅", "Handspiel Diskussion 🤷‍♂️",
+        "Fliegender Wechsel 🔁", "TV-Zeitlupe 📺", "7-Meter wird gehalten 🧱", "Bonusfeld 🎉"
+      ],
+      "Regionalliga": [
+        "Rückraumfackel X", "Gelbe Karte wegen Meckern 🟨", "Heber 🎯", "Spieler bleibt liegen 🚨",
+        "Torwart redet laut 🧤🗣️", "Tor nach unter 1 Minute ⏱️", "Tempogegenstoß ⌛", "Selber!🙋🏻‍♀️",
+        "Kopf hoch ✊", "Über den Schiri meckern 🙄", "Wurf sehr weit übers Tor 🤦", "Trainer schreit rum 😡",
+        "Klassischer Kreisanspiel 💡", "Zu viele Schritte 🚶", "Wurf an den Pfosten 🥴", "Bonusfeld 🎉"
+      ],
+      "Kreisklasse": [
+        "Ball fällt beim Einwurf runter 😬", "Torwart ohne Schuhe 🧦", "Wurf aus dem Stand 🪵", "Dreher klappt nicht 😵",
+        "Trainer spielt mit 🙋‍♂️", "Wechsel zu sechst 😅", "Alle laufen gleichzeitig 😵‍💫", "Wurf geht über Hallendach 🏗️",
+        "Tempogegenstoß stolpert 🫠", "Spieler schreien sich an 😤", "Pfeife vom Schiri geht nicht 🔇",
+        "Kreis übertritt nicht gesehen 👀", "Wurf mit beiden Füßen am Boden 🐘", "Fan ruft 'Schiri Brille!' 🤓",
+        "Eins gegen Null wird verworfen 🤯", "Bonusfeld 🎉"
+      ]
+    };
+
+    const leagueToGroup = {
+      "1. Bundesliga": "1. Bundesliga",
+      "2. Bundesliga": "1. Bundesliga",
+      "3. Liga": "1. Bundesliga",
+      "Regionalliga": "Regionalliga",
+      "Oberliga": "Regionalliga",
+      "Verbandsliga": "Regionalliga",
+      "Bezirksliga": "Kreisklasse",
+      "Kreisliga": "Kreisklasse",
+      "Kreisklasse": "Kreisklasse"
+    };
+
+    const clubPhrases = {
+      TVWERNE: {
+        herren: [
+          "Jaegger wirft Heber",
+          "Die 1 steht nicht im Tor",
+          "Ohne Vorsagen",
+          "Und nochmal hin und her",
+          "Tempogegenstoß",
+          "Domme 2 Minuten oder Rot",
+          "Schüttel wirft 7 Meter",
+          "Jakob fängt Ball nicht",
+          "Harzfehler",
+          "Thorsten macht nen Juri Knorr Gedächtniswurf",
+          "Nils schlägt das Tor",
+          "Bonusfeld",
+          "Schiri läuft nur zwischen hellblauen Linien",
+          "1. Herren verliert Auswärts",
+          "Kein Timeout genommen",
+          "Irgendwas mit Harz"
+        ],
+        damen: [
+          "Damen werfen Lupfer",
+          "Zweite Welle über 5 Stationen",
+          "Coach ruft 'Doppeln!'",
+          "Kampf um den Ball am Kreis",
+          "Trikot vergessen",
+          "Bank klatscht im Takt",
+          "Bonusfeld",
+          "7m wird eiskalt verwandelt",
+          "Harzschlacht in der Halle",
+          "Einwurf direkt ins Aus",
+          "Traineransprache bei 20:5",
+          "Team-Selfie nach dem Spiel",
+          "Lange Diskussion mit dem Schiri",
+          "Fünf Pässe – kein Wurf",
+          "Rückraum wirft aus dem Stand",
+          "Spielerin mit buntem Tape"
+        ]
+      }
+    };
+
+    const clubDesigns = {
+      TVWERNE: {
+        farben: { primär: "#e30613", text: "#003399" },
+        logo: "logos/Logo_TVWERNE.svg"
+      }
+    };
     const bingoPatterns = [
       [0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15],
       [0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15],
