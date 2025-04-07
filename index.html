@@ -24,13 +24,15 @@
       font-family: Arial, sans-serif;
       text-align: center;
       margin: 0;
+      padding: 1rem;
+      padding-left: 5vw;
+      padding-right: 5vw;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       background-color: var(--primary-color);
-      padding: 1rem;
       color: var(--text-color);
     }
 
@@ -78,7 +80,7 @@
 </head>
 <body>
   <h1 id="headline">DAS Handball-Bingo</h1>
-  <img id="logo" src="https://tvwerne.de/wp-content/uploads/2020/11/cropped-TVW_Logo_transparent-1.png" alt="TV Werne Logo">
+  <img id="logo" src="https://tvwerne.de/wp-content/uploads/2020/11/TV-Werne-Logo_2021_RGB.png" alt="TV Werne Logo">
 
   <div id="modeSelection">
     <p>Möchtest du ein Vereinsbingo oder ein normales Bingo spielen?</p>
@@ -94,16 +96,15 @@
 
   <div id="teamSelection" style="display:none;">
     <p>Wähle die Mannschaft:</p>
-    <select id="teamSelect">
+    <select id="teamSelect" onchange="renderClubGrid()">
       <option value="herren">Herren</option>
       <option value="damen">Damen</option>
     </select>
-    <button onclick="renderClubGrid()">Bingo erstellen</button>
   </div>
 
   <div id="standardInput" style="display:none;">
     <p>Wähle die Liga:</p>
-    <select id="leagueSelect">
+    <select id="leagueSelect" onchange="renderStandardGrid()">
       <option value="1. Bundesliga">1. Bundesliga</option>
       <option value="2. Bundesliga">2. Bundesliga</option>
       <option value="3. Liga">3. Liga</option>
@@ -114,7 +115,6 @@
       <option value="Kreisliga">Kreisliga</option>
       <option value="Kreisklasse">Kreisklasse</option>
     </select>
-    <button onclick="renderStandardGrid()">Standard-Bingo starten</button>
   </div>
 
   <p>Klick auf die Felder, um sie abzustreichen!</p>
@@ -128,57 +128,6 @@
   </div>
 
   <script>
-    const defaultColors = {
-      primary: '#f9f9f9',
-      text: '#000000',
-      active: '#4caf50',
-      border: '#ccc'
-    };
-
-    const clubColors = {
-      "TVWERNE": {
-        primary: '#ffffff',
-        text: '#003399',
-        active: '#e30613',
-        border: '#e30613'
-      }
-    };
-
-    const clubPhrases = {
-      "TVWERNE": {
-        herren: [
-          "Jaegger wirft Heber", "Die 1 steht nicht im Tor", "Ohne Vorsagen", "Und nochmal hin und her",
-          "Tempogegenstoß", "Domme 2 Minuten oder Rot", "Schüttel wirft 7 Meter", "Jakob fängt Ball nicht",
-          "Harzfehler", "Thorsten macht nen Juri Knorr Gedächtniswurf", "Nils schlägt das Tor", "Bonusfeld",
-          "Schiri läuft nur zwischen hellblauen Linien", "1. Herren verliert Auswärts", "Kein Timeout genommen", "Irgendwas mit Harz"
-        ],
-        damen: [
-          "Damen werfen Lupfer", "Zweite Welle über 5 Stationen", "Coach ruft 'Doppeln!'", "Kampf um den Ball am Kreis",
-          "Trikot vergessen", "Bank klatscht im Takt", "Bonusfeld", "7m wird eiskalt verwandelt", "Harzschlacht in der Halle",
-          "Einwurf direkt ins Aus", "Traineransprache bei 20:5", "Team-Selfie nach dem Spiel", "Lange Diskussion mit dem Schiri",
-          "Fünf Pässe – kein Wurf", "Rückraum wirft aus dem Stand", "Spielerin mit buntem Tape"
-        ]
-      }
-    };
-
-    const standardPhrases = {
-      "1. Bundesliga": ["Kempa-Tor 💥", "Rückraumhammer 🧨", "Perfekte Abwehrrotation 🔄", "Torwart-Parade 🧤", "Fragwürdiges Abspiel 🤔", "Strafwurf mit Dreher 🎯", "Videobeweis 🎥", "Tor in letzter Sekunde ⌛", "Fangesänge 🎶", "Trainer nimmt Auszeit ⏸️", "Blockmonster 🙅", "Handspiel Diskussion 🤷‍♂️", "Fliegender Wechsel 🔁", "TV-Zeitlupe 📺", "7-Meter wird gehalten 🧱", "Bonusfeld 🎉"],
-      "Regionalliga": ["Rückraumfackel X", "Gelbe Karte wegen Meckern 🟨", "Heber 🎯", "Spieler bleibt liegen 🚨", "Torwart redet laut 🧤🗣️", "Tor nach unter 1 Minute ⏱️", "Tempogegenstoß ⌛", "Selber!🙋🏻‍♀️", "Kopf hoch ✊", "Über den Schiri meckern 🙄", "Wurf sehr weit übers Tor 🤦", "Trainer schreit rum 😡", "Klassischer Kreisanspiel 💡", "Zu viele Schritte 🚶", "Wurf an den Pfosten 🥴", "Bonusfeld 🎉"],
-      "Kreisklasse": ["Ball fällt beim Einwurf runter 😬", "Torwart ohne Schuhe 🧦", "Wurf aus dem Stand 🪵", "Dreher klappt nicht 😵", "Trainer spielt mit 🙋‍♂️", "Wechsel zu sechst 😅", "Alle laufen gleichzeitig 😵‍💫", "Wurf geht über Hallendach 🏗️", "Tempogegenstoß stolpert 🫠", "Spieler schreien sich an 😤", "Pfeife vom Schiri geht nicht 🔇", "Kreis übertritt nicht gesehen 👀", "Wurf mit beiden Füßen am Boden 🐘", "Fan ruft 'Schiri Brille!' 🤓", "Eins gegen Null wird verworfen 🤯", "Bonusfeld 🎉"]
-    };
-
-    const leagueToGroup = {
-      "1. Bundesliga": "1. Bundesliga",
-      "2. Bundesliga": "1. Bundesliga",
-      "3. Liga": "1. Bundesliga",
-      "Regionalliga": "Regionalliga",
-      "Oberliga": "Regionalliga",
-      "Verbandsliga": "Regionalliga",
-      "Bezirksliga": "Kreisklasse",
-      "Kreisliga": "Kreisklasse",
-      "Kreisklasse": "Kreisklasse"
-    };
-
     function showClubInput() {
       document.getElementById('modeSelection').style.display = 'none';
       document.getElementById('clubInput').style.display = 'block';
@@ -189,57 +138,41 @@
       document.getElementById('standardInput').style.display = 'block';
     }
 
-    function activateClubBingo() {
-      const code = document.getElementById('clubCodeInput').value.trim().toUpperCase();
-      if (clubPhrases[code]) {
-        applyClubStyles(code);
-        document.getElementById('teamSelection').style.display = 'block';
-        document.getElementById('logo').style.display = 'block';
-        document.getElementById('headline').textContent = 'DAS Handball-Bingo';
-      } else {
-        alert("Ungültiger Vereinscode!");
+    const bingoPatterns = [
+      [0, 1, 2, 3],
+      [4, 5, 6, 7],
+      [8, 9, 10, 11],
+      [12, 13, 14, 15],
+      [0, 4, 8, 12],
+      [1, 5, 9, 13],
+      [2, 6, 10, 14],
+      [3, 7, 11, 15],
+      [0, 5, 10, 15],
+      [3, 6, 9, 12]
+    ];
+
+    function checkBingo() {
+      const cells = Array.from(document.querySelectorAll('.cell'));
+      const activeCells = cells.map((cell, i) => cell.classList.contains('active') ? i : null).filter(i => i !== null);
+      for (const pattern of bingoPatterns) {
+        if (pattern.every(index => activeCells.includes(index))) {
+          alert("🎉 Bingo erkannt! Glückwunsch! 🎉");
+          break;
+        }
       }
     }
 
-    function applyClubStyles(code) {
-      const styles = clubColors[code] || defaultColors;
-      document.documentElement.style.setProperty('--primary-color', styles.primary);
-      document.documentElement.style.setProperty('--text-color', styles.text);
-      document.documentElement.style.setProperty('--cell-active-bg-color', styles.active);
-      document.documentElement.style.setProperty('--grid-border-color', styles.border);
-    }
-
-    function renderClubGrid() {
-      const code = document.getElementById('clubCodeInput').value.trim().toUpperCase();
-      const team = document.getElementById('teamSelect').value;
-      const phrases = clubPhrases[code][team];
-      const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
+    function createGrid(phrases) {
       const grid = document.getElementById('bingoGrid');
       grid.innerHTML = '';
+      const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
       shuffled.forEach((phrase) => {
         const cell = document.createElement('div');
         cell.className = 'cell';
         cell.textContent = phrase;
         cell.addEventListener('click', () => {
           cell.classList.toggle('active');
-        });
-        grid.appendChild(cell);
-      });
-    }
-
-    function renderStandardGrid() {
-      const league = document.getElementById('leagueSelect').value;
-      const group = leagueToGroup[league];
-      const phrases = standardPhrases[group];
-      const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
-      const grid = document.getElementById('bingoGrid');
-      grid.innerHTML = '';
-      shuffled.forEach((phrase) => {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.textContent = phrase;
-        cell.addEventListener('click', () => {
-          cell.classList.toggle('active');
+          checkBingo();
         });
         grid.appendChild(cell);
       });
