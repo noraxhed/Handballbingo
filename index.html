@@ -71,16 +71,25 @@
     #logo {
       max-width: 150px;
       margin-bottom: 1rem;
+      display: none;
     }
   </style>
 </head>
 <body>
   <h1 id="headline">DAS Handball-Bingo</h1>
-  <img id="logo" src="https://tvwerne.de/wp-content/uploads/2020/11/cropped-TVW_Logo_transparent-1.png" alt="TV Werne Logo" style="display:none;">
+  <img id="logo" src="https://tvwerne.de/wp-content/uploads/2020/11/cropped-TVW_Logo_transparent-1.png" alt="TV Werne Logo">
 
-  <p>Oder gib deinen Vereinscode ein:</p>
-  <input type="text" id="clubCodeInput" placeholder="Vereinscode eingeben">
-  <button onclick="activateClubBingo()">Vereinsbingo starten</button>
+  <div id="modeSelection">
+    <p>Möchtest du ein Vereinsbingo oder ein normales Bingo spielen?</p>
+    <button onclick="showClubInput()">🎽 Vereinsbingo</button>
+    <button onclick="showStandardInput()">🏆 Liga-Bingo</button>
+  </div>
+
+  <div id="clubInput" style="display:none;">
+    <p>Gib deinen Vereinscode ein:</p>
+    <input type="text" id="clubCodeInput" placeholder="Vereinscode eingeben">
+    <button onclick="activateClubBingo()">Vereinsbingo starten</button>
+  </div>
 
   <div id="teamSelection" style="display:none;">
     <p>Wähle die Mannschaft:</p>
@@ -91,19 +100,21 @@
     <button onclick="renderClubGrid()">Bingo erstellen</button>
   </div>
 
-  <p id="standardLabel">Oder wähle die Liga:</p>
-  <select id="leagueSelect">
-    <option value="1. Bundesliga">1. Bundesliga</option>
-    <option value="2. Bundesliga">2. Bundesliga</option>
-    <option value="3. Liga">3. Liga</option>
-    <option value="Regionalliga">Regionalliga</option>
-    <option value="Oberliga">Oberliga</option>
-    <option value="Verbandsliga">Verbandsliga</option>
-    <option value="Bezirksliga">Bezirksliga</option>
-    <option value="Kreisliga">Kreisliga</option>
-    <option value="Kreisklasse">Kreisklasse</option>
-  </select>
-  <button onclick="renderStandardGrid()">Standard-Bingo starten</button>
+  <div id="standardInput" style="display:none;">
+    <p>Wähle die Liga:</p>
+    <select id="leagueSelect">
+      <option value="1. Bundesliga">1. Bundesliga</option>
+      <option value="2. Bundesliga">2. Bundesliga</option>
+      <option value="3. Liga">3. Liga</option>
+      <option value="Regionalliga">Regionalliga</option>
+      <option value="Oberliga">Oberliga</option>
+      <option value="Verbandsliga">Verbandsliga</option>
+      <option value="Bezirksliga">Bezirksliga</option>
+      <option value="Kreisliga">Kreisliga</option>
+      <option value="Kreisklasse">Kreisklasse</option>
+    </select>
+    <button onclick="renderStandardGrid()">Standard-Bingo starten</button>
+  </div>
 
   <p>Klick auf die Felder, um sie abzustreichen!</p>
   <div class="grid" id="bingoGrid"></div>
@@ -135,40 +146,16 @@
     const clubPhrases = {
       "TVWERNE": {
         herren: [
-          "Jaegger wirft Heber",
-          "Die 1 steht nicht im Tor",
-          "Ohne Vorsagen",
-          "Und nochmal hin und her",
-          "Tempogegenstoß",
-          "Domme 2 Minuten oder Rot",
-          "Schüttel wirft 7 Meter",
-          "Jakob fängt Ball nicht",
-          "Harzfehler",
-          "Thorsten macht nen Juri Knorr Gedächtniswurf",
-          "Nils schlägt das Tor",
-          "Bonusfeld",
-          "Schiri läuft nur zwischen hellblauen Linien",
-          "1. Herren verliert Auswärts",
-          "Kein Timeout genommen",
-          "Irgendwas mit Harz"
+          "Jaegger wirft Heber", "Die 1 steht nicht im Tor", "Ohne Vorsagen", "Und nochmal hin und her",
+          "Tempogegenstoß", "Domme 2 Minuten oder Rot", "Schüttel wirft 7 Meter", "Jakob fängt Ball nicht",
+          "Harzfehler", "Thorsten macht nen Juri Knorr Gedächtniswurf", "Nils schlägt das Tor", "Bonusfeld",
+          "Schiri läuft nur zwischen hellblauen Linien", "1. Herren verliert Auswärts", "Kein Timeout genommen", "Irgendwas mit Harz"
         ],
         damen: [
-          "Damen werfen Lupfer",
-          "Zweite Welle über 5 Stationen",
-          "Coach ruft 'Doppeln!'",
-          "Kampf um den Ball am Kreis",
-          "Trikot vergessen",
-          "Bank klatscht im Takt",
-          "Bonusfeld",
-          "7m wird eiskalt verwandelt",
-          "Harzschlacht in der Halle",
-          "Einwurf direkt ins Aus",
-          "Traineransprache bei 20:5",
-          "Team-Selfie nach dem Spiel",
-          "Lange Diskussion mit dem Schiri",
-          "Fünf Pässe – kein Wurf",
-          "Rückraum wirft aus dem Stand",
-          "Spielerin mit buntem Tape"
+          "Damen werfen Lupfer", "Zweite Welle über 5 Stationen", "Coach ruft 'Doppeln!'", "Kampf um den Ball am Kreis",
+          "Trikot vergessen", "Bank klatscht im Takt", "Bonusfeld", "7m wird eiskalt verwandelt", "Harzschlacht in der Halle",
+          "Einwurf direkt ins Aus", "Traineransprache bei 20:5", "Team-Selfie nach dem Spiel", "Lange Diskussion mit dem Schiri",
+          "Fünf Pässe – kein Wurf", "Rückraum wirft aus dem Stand", "Spielerin mit buntem Tape"
         ]
       }
     };
@@ -190,6 +177,16 @@
       "Kreisliga": "Kreisklasse",
       "Kreisklasse": "Kreisklasse"
     };
+
+    function showClubInput() {
+      document.getElementById('modeSelection').style.display = 'none';
+      document.getElementById('clubInput').style.display = 'block';
+    }
+
+    function showStandardInput() {
+      document.getElementById('modeSelection').style.display = 'none';
+      document.getElementById('standardInput').style.display = 'block';
+    }
 
     function activateClubBingo() {
       const code = document.getElementById('clubCodeInput').value.trim().toUpperCase();
