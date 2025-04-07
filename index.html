@@ -10,6 +10,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DAS Handball-Bingo</title>
   <style>
+    :root {
+      --primary-color: #f9f9f9;
+      --secondary-color: #4caf50;
+      --text-color: #000000;
+      --grid-border-color: #ccc;
+      --cell-bg-color: #f4f4f4;
+      --cell-active-bg-color: #4caf50;
+      --cell-active-text-color: #ffffff;
+    }
+
     body {
       font-family: Arial, sans-serif;
       text-align: center;
@@ -19,11 +29,12 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-color: #f9f9f9;
+      background-color: var(--primary-color);
       padding: 1rem;
+      color: var(--text-color);
     }
 
-    select {
+    select, input, button {
       font-size: 1rem;
       padding: 0.5rem;
       margin-bottom: 1rem;
@@ -35,7 +46,6 @@
       gap: 5px;
       width: min(90vmin, 500px);
       height: min(90vmin, 500px);
-      margin: 0 auto;
     }
 
     .cell {
@@ -43,10 +53,10 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      border: 1px solid #ccc;
-      background-color: #f4f4f4;
+      border: 1px solid var(--grid-border-color);
+      background-color: var(--cell-bg-color);
       cursor: pointer;
-      font-size: calc(2vmin);
+      font-size: calc(2vmin + 6px);
       box-sizing: border-box;
       overflow-wrap: break-word;
       aspect-ratio: 1 / 1;
@@ -54,14 +64,34 @@
     }
 
     .cell.active {
-      background-color: #4caf50;
-      color: white;
+      background-color: var(--cell-active-bg-color);
+      color: var(--cell-active-text-color);
+    }
+
+    #logo {
+      max-width: 150px;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
 <body>
-  <h1>DAS Handball-Bingo</h1>
-  <p>Wähle die Liga:</p>
+  <h1 id="headline">DAS Handball-Bingo</h1>
+  <img id="logo" src="https://tvwerne.de/wp-content/uploads/2020/11/cropped-TVW_Logo_transparent-1.png" alt="TV Werne Logo" style="display:none;">
+
+  <p>Oder gib deinen Vereinscode ein:</p>
+  <input type="text" id="clubCodeInput" placeholder="Vereinscode eingeben">
+  <button onclick="activateClubBingo()">Vereinsbingo starten</button>
+
+  <div id="teamSelection" style="display:none;">
+    <p>Wähle die Mannschaft:</p>
+    <select id="teamSelect">
+      <option value="herren">Herren</option>
+      <option value="damen">Damen</option>
+    </select>
+    <button onclick="renderClubGrid()">Bingo erstellen</button>
+  </div>
+
+  <p id="standardLabel">Oder wähle die Liga:</p>
   <select id="leagueSelect">
     <option value="1. Bundesliga">1. Bundesliga</option>
     <option value="2. Bundesliga">2. Bundesliga</option>
@@ -73,12 +103,11 @@
     <option value="Kreisliga">Kreisliga</option>
     <option value="Kreisklasse">Kreisklasse</option>
   </select>
+  <button onclick="renderStandardGrid()">Standard-Bingo starten</button>
 
   <p>Klick auf die Felder, um sie abzustreichen!</p>
   <div class="grid" id="bingoGrid"></div>
-  <p class="note">Ein Klick markiert das Feld, ein zweiter hebt es wieder auf. Uneinig? Redet miteinander!</p>
 
-  <!-- Immer sichtbarer Spendenhinweis -->
   <div style="margin-top: 2rem;">
     <p style="font-size: 1rem;">💚 Dir gefällt DAS Handball-Bingo?<br>Dann unterstütze das Projekt freiwillig und halte es am Leben:</p>
     <a href="https://www.paypal.me/Noraxhed" target="_blank" style="display:inline-block; margin-top:0.5rem; padding:0.5rem 1rem; background-color:#4caf50; color:white; text-decoration:none; border-radius:5px;">
@@ -87,132 +116,136 @@
   </div>
 
   <script>
-    const phrasesByGroup = {
-      bundesliga: [
-        "Kempa-Tor 💥",
-        "Rückraumhammer 🧨",
-        "Perfekte Abwehrrotation 🔄",
-        "Torwart-Parade 🧤",
-        "Fragwürdiges Abspiel 🤔",
-        "Strafwurf mit Dreher 🎯",
-        "Videobeweis 🎥",
-        "Tor in letzter Sekunde ⌛",
-        "Fangesänge 🎶",
-        "Trainer nimmt Auszeit ⏸️",
-        "Blockmonster 🙅",
-        "Handspiel Diskussion 🤷‍♂️",
-        "Fliegender Wechsel 🔁",
-        "TV-Zeitlupe 📺",
-        "7-Meter wird gehalten 🧱",
-        "Bonusfeld 🎉"
-      ],
-      regionalliga: [
-        "Rückraumfackel X",
-        "Gelbe Karte wegen Meckern 🟨",
-        "Heber 🎯",
-        "Spieler bleibt liegen 🚨",
-        "Torwart redet laut 🧤🗣️",
-        "Tor nach unter 1 Minute ⏱️",
-        "Tempogegenstoß ⌛",
-        "Selber!🙋🏻‍♀️",
-        "Kopf hoch ✊",
-        "Über den Schiri meckern 🙄",
-        "Wurf sehr weit übers Tor 🤦",
-        "Trainer schreit rum 😡",
-        "Klassischer Kreisanspiel 💡",
-        "Zu viele Schritte 🚶",
-        "Wurf an den Pfosten 🥴",
-        "Bonusfeld 🎉"
-      ],
-      kreisklasse: [
-        "Ball fällt beim Einwurf runter 😬",
-        "Torwart ohne Schuhe 🧦",
-        "Wurf aus dem Stand 🪵",
-        "Dreher klappt nicht 😵",
-        "Trainer spielt mit 🙋‍♂️",
-        "Wechsel zu sechst 😅",
-        "Alle laufen gleichzeitig 😵‍💫",
-        "Wurf geht über Hallendach 🏗️",
-        "Tempogegenstoß stolpert 🫠",
-        "Spieler schreien sich an 😤",
-        "Pfeife vom Schiri geht nicht 🔇",
-        "Kreis übertritt nicht gesehen 👀",
-        "Wurf mit beiden Füßen am Boden 🐘",
-        "Fan ruft 'Schiri Brille!' 🤓",
-        "Eins gegen Null wird verworfen 🤯",
-        "Bonusfeld 🎉"
-      ]
+    const defaultColors = {
+      primary: '#f9f9f9',
+      text: '#000000',
+      active: '#4caf50',
+      border: '#ccc'
+    };
+
+    const clubColors = {
+      "TVWERNE": {
+        primary: '#ffffff',
+        text: '#003399',
+        active: '#e30613',
+        border: '#e30613'
+      }
+    };
+
+    const clubPhrases = {
+      "TVWERNE": {
+        herren: [
+          "Jaegger wirft Heber",
+          "Die 1 steht nicht im Tor",
+          "Ohne Vorsagen",
+          "Und nochmal hin und her",
+          "Tempogegenstoß",
+          "Domme 2 Minuten oder Rot",
+          "Schüttel wirft 7 Meter",
+          "Jakob fängt Ball nicht",
+          "Harzfehler",
+          "Thorsten macht nen Juri Knorr Gedächtniswurf",
+          "Nils schlägt das Tor",
+          "Bonusfeld",
+          "Schiri läuft nur zwischen hellblauen Linien",
+          "1. Herren verliert Auswärts",
+          "Kein Timeout genommen",
+          "Irgendwas mit Harz"
+        ],
+        damen: [
+          "Damen werfen Lupfer",
+          "Zweite Welle über 5 Stationen",
+          "Coach ruft 'Doppeln!'",
+          "Kampf um den Ball am Kreis",
+          "Trikot vergessen",
+          "Bank klatscht im Takt",
+          "Bonusfeld",
+          "7m wird eiskalt verwandelt",
+          "Harzschlacht in der Halle",
+          "Einwurf direkt ins Aus",
+          "Traineransprache bei 20:5",
+          "Team-Selfie nach dem Spiel",
+          "Lange Diskussion mit dem Schiri",
+          "Fünf Pässe – kein Wurf",
+          "Rückraum wirft aus dem Stand",
+          "Spielerin mit buntem Tape"
+        ]
+      }
+    };
+
+    const standardPhrases = {
+      "1. Bundesliga": ["Kempa-Tor 💥", "Rückraumhammer 🧨", "Perfekte Abwehrrotation 🔄", "Torwart-Parade 🧤", "Fragwürdiges Abspiel 🤔", "Strafwurf mit Dreher 🎯", "Videobeweis 🎥", "Tor in letzter Sekunde ⌛", "Fangesänge 🎶", "Trainer nimmt Auszeit ⏸️", "Blockmonster 🙅", "Handspiel Diskussion 🤷‍♂️", "Fliegender Wechsel 🔁", "TV-Zeitlupe 📺", "7-Meter wird gehalten 🧱", "Bonusfeld 🎉"],
+      "Regionalliga": ["Rückraumfackel X", "Gelbe Karte wegen Meckern 🟨", "Heber 🎯", "Spieler bleibt liegen 🚨", "Torwart redet laut 🧤🗣️", "Tor nach unter 1 Minute ⏱️", "Tempogegenstoß ⌛", "Selber!🙋🏻‍♀️", "Kopf hoch ✊", "Über den Schiri meckern 🙄", "Wurf sehr weit übers Tor 🤦", "Trainer schreit rum 😡", "Klassischer Kreisanspiel 💡", "Zu viele Schritte 🚶", "Wurf an den Pfosten 🥴", "Bonusfeld 🎉"],
+      "Kreisklasse": ["Ball fällt beim Einwurf runter 😬", "Torwart ohne Schuhe 🧦", "Wurf aus dem Stand 🪵", "Dreher klappt nicht 😵", "Trainer spielt mit 🙋‍♂️", "Wechsel zu sechst 😅", "Alle laufen gleichzeitig 😵‍💫", "Wurf geht über Hallendach 🏗️", "Tempogegenstoß stolpert 🫠", "Spieler schreien sich an 😤", "Pfeife vom Schiri geht nicht 🔇", "Kreis übertritt nicht gesehen 👀", "Wurf mit beiden Füßen am Boden 🐘", "Fan ruft 'Schiri Brille!' 🤓", "Eins gegen Null wird verworfen 🤯", "Bonusfeld 🎉"]
     };
 
     const leagueToGroup = {
-      "1. Bundesliga": "bundesliga",
-      "2. Bundesliga": "bundesliga",
-      "3. Liga": "bundesliga",
-      "Regionalliga": "regionalliga",
-      "Oberliga": "regionalliga",
-      "Verbandsliga": "regionalliga",
-      "Bezirksliga": "kreisklasse",
-      "Kreisliga": "kreisklasse",
-      "Kreisklasse": "kreisklasse"
+      "1. Bundesliga": "1. Bundesliga",
+      "2. Bundesliga": "1. Bundesliga",
+      "3. Liga": "1. Bundesliga",
+      "Regionalliga": "Regionalliga",
+      "Oberliga": "Regionalliga",
+      "Verbandsliga": "Regionalliga",
+      "Bezirksliga": "Kreisklasse",
+      "Kreisliga": "Kreisklasse",
+      "Kreisklasse": "Kreisklasse"
     };
 
-    const grid = document.getElementById('bingoGrid');
-    const leagueSelect = document.getElementById('leagueSelect');
+    function activateClubBingo() {
+      const code = document.getElementById('clubCodeInput').value.trim().toUpperCase();
+      if (clubPhrases[code]) {
+        applyClubStyles(code);
+        document.getElementById('teamSelection').style.display = 'block';
+        document.getElementById('logo').style.display = 'block';
+        document.getElementById('headline').textContent = 'DAS Handball-Bingo';
+      } else {
+        alert("Ungültiger Vereinscode!");
+      }
+    }
 
-    function renderGrid(league) {
-      const group = leagueToGroup[league];
-      const phrases = phrasesByGroup[group];
+    function applyClubStyles(code) {
+      const styles = clubColors[code] || defaultColors;
+      document.documentElement.style.setProperty('--primary-color', styles.primary);
+      document.documentElement.style.setProperty('--text-color', styles.text);
+      document.documentElement.style.setProperty('--cell-active-bg-color', styles.active);
+      document.documentElement.style.setProperty('--grid-border-color', styles.border);
+    }
+
+    function renderClubGrid() {
+      const code = document.getElementById('clubCodeInput').value.trim().toUpperCase();
+      const team = document.getElementById('teamSelect').value;
+      const phrases = clubPhrases[code][team];
       const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
-
+      const grid = document.getElementById('bingoGrid');
       grid.innerHTML = '';
-
       shuffled.forEach((phrase) => {
         const cell = document.createElement('div');
         cell.className = 'cell';
         cell.textContent = phrase;
         cell.addEventListener('click', () => {
           cell.classList.toggle('active');
-          checkBingo();
         });
         grid.appendChild(cell);
       });
     }
 
-    function checkBingo() {
-      const cells = Array.from(document.querySelectorAll('.cell'));
-      const activeCells = cells.map((cell, i) => (cell.classList.contains('active') ? i : null)).filter(i => i !== null);
-
-      const bingoPatterns = [
-        [0, 1, 2, 3],
-        [4, 5, 6, 7],
-        [8, 9, 10, 11],
-        [12, 13, 14, 15],
-        [0, 4, 8, 12],
-        [1, 5, 9, 13],
-        [2, 6, 10, 14],
-        [3, 7, 11, 15],
-        [0, 5, 10, 15],
-        [3, 6, 9, 12]
-      ];
-
-      for (const pattern of bingoPatterns) {
-        if (pattern.every(index => activeCells.includes(index))) {
-          const confirmBingo = confirm("Bingo erkannt! Bist du dir sicher?");
-          if (confirmBingo) {
-            alert("🎉 Bingo! Herzlichen Glückwunsch!");
-          }
-          break;
-        }
-      }
+    function renderStandardGrid() {
+      const league = document.getElementById('leagueSelect').value;
+      const group = leagueToGroup[league];
+      const phrases = standardPhrases[group];
+      const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
+      const grid = document.getElementById('bingoGrid');
+      grid.innerHTML = '';
+      shuffled.forEach((phrase) => {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.textContent = phrase;
+        cell.addEventListener('click', () => {
+          cell.classList.toggle('active');
+        });
+        grid.appendChild(cell);
+      });
     }
-
-    // Initial Grid
-    renderGrid(leagueSelect.value);
-
-    // Event listener
-    leagueSelect.addEventListener('change', (e) => {
-      renderGrid(e.target.value);
-    });
   </script>
 </body>
 </html>
