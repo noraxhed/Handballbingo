@@ -69,7 +69,8 @@
       gap: 5px;
       width: 100vw;
       max-width: 500px;
-      margin: auto;
+      margin: 1rem auto;
+      min-height: 300px;
     }
 
     .cell {
@@ -163,7 +164,7 @@
     </div>
 
     <p>Klick auf die Felder, um sie abzustreichen!</p>
-    <div class="grid" id="bingoGrid"></div>
+    <div class="grid" id="bingoGrid">Bitte wähle eine Liga oder einen Vereinscode aus.</div>
 
     <div style="margin-top: 2rem;">
       <p style="font-size: 1rem;">💚 Dir gefällt DAS Handball-Bingo?<br>Dann unterstütze das Projekt freiwillig und halte es am Leben:</p>
@@ -212,6 +213,10 @@
     function createGrid(phrases) {
       const grid = document.getElementById('bingoGrid');
       grid.innerHTML = '';
+      if (!phrases || phrases.length < 16) {
+        grid.innerHTML = '<p>Keine gültigen Bingo-Phrasen gefunden.</p>';
+        return;
+      }
       const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
       shuffled.forEach((phrase) => {
         const cell = document.createElement('div');
@@ -239,10 +244,10 @@
     function renderClubGrid() {
       const code = document.getElementById('vereinCodeInput').value.trim().toUpperCase();
       const team = document.getElementById('teamSelect').value;
-      const phrases = clubPhrases[code]?.[team];
+      const phrases = clubPhrases?.[code]?.[team];
       const errorDiv = document.getElementById('vereinError');
 
-      if (phrases) {
+      if (phrases && phrases.length >= 16) {
         errorDiv.textContent = "";
         const design = clubDesigns[code];
         if (design) {
@@ -255,7 +260,7 @@
         document.getElementById('headline').textContent = 'DAS Handball-Bingo – ' + code;
         createGrid(phrases);
       } else {
-        errorDiv.textContent = "Verein nicht gefunden. Bitte Code prüfen.";
+        errorDiv.textContent = "Verein nicht gefunden oder unvollständige Phrasen.";
         document.getElementById('bingoGrid').innerHTML = "";
         document.getElementById('logo').style.display = 'none';
       }
@@ -263,11 +268,12 @@
 
     function renderStandardGrid() {
       const league = document.getElementById('leagueSelect').value;
-      const group = leagueToGroup[league];
-      if (standardPhrases[group]) {
-        createGrid(standardPhrases[group]);
+      const group = leagueToGroup?.[league];
+      const phrases = standardPhrases?.[group];
+      if (phrases && phrases.length >= 16) {
+        createGrid(phrases);
       } else {
-        document.getElementById('bingoGrid').innerHTML = "";
+        document.getElementById('bingoGrid').innerHTML = '<p>Für diese Liga wurden keine Bingo-Phrasen gefunden.</p>';
       }
     }
 
