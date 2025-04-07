@@ -24,9 +24,7 @@
       font-family: Arial, sans-serif;
       text-align: center;
       margin: 0;
-      padding: 1rem;
-      padding-left: 5vw;
-      padding-right: 5vw;
+      padding: 1rem 5vw;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -48,7 +46,6 @@
       gap: 5px;
       width: 100vw;
       max-width: 500px;
-      height: auto;
     }
 
     .cell {
@@ -82,17 +79,11 @@
   <h1 id="headline">DAS Handball-Bingo</h1>
   <img id="logo" src="https://tvwerne.de/wp-content/uploads/2020/11/TV-Werne-Logo_2021_RGB.png" alt="TV Werne Logo">
 
-  <div id="teamSelection" style="display:none;">
-    <p>Wähle die Mannschaft:</p>
-    <select id="teamSelect" onchange="renderClubGrid()">
-      <option value="herren">Herren</option>
-      <option value="damen">Damen</option>
-    </select>
-  </div>
-
-  <div id="standardInput">
-    <p>Wähle die Liga:</p>
-    <select id="leagueSelect" onchange="renderStandardGrid()">
+  <div>
+    <p>Wähle die Liga oder Vereinsbingo:</p>
+    <select id="leagueSelect" onchange="handleSelection()">
+      <option value="">Bitte wählen ...</option>
+      <option value="verein">🎽 Vereinsbingo</option>
       <option value="1. Bundesliga">1. Bundesliga</option>
       <option value="2. Bundesliga">2. Bundesliga</option>
       <option value="3. Liga">3. Liga</option>
@@ -103,6 +94,13 @@
       <option value="Kreisliga">Kreisliga</option>
       <option value="Kreisklasse">Kreisklasse</option>
     </select>
+    <div id="vereinInput" style="display:none;">
+      <input type="text" id="vereinCodeInput" placeholder="Vereinscode eingeben" />
+      <select id="teamSelect" onchange="renderClubGrid()">
+        <option value="herren">Herren</option>
+        <option value="damen">Damen</option>
+      </select>
+    </div>
   </div>
 
   <p>Klick auf die Felder, um sie abzustreichen!</p>
@@ -116,16 +114,6 @@
   </div>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const vereinCode = urlParams.get("verein");
-
-    const clubPhrases = {
-      "TVWERNE": {
-        herren: ["Jaegger wirft Heber", "Die 1 steht nicht im Tor", "Ohne Vorsagen", "Und nochmal hin und her", "Tempogegenstoß", "Domme 2 Minuten oder Rot", "Schüttel wirft 7 Meter", "Jakob fängt Ball nicht", "Harzfehler", "Thorsten macht nen Juri Knorr Gedächtniswurf", "Nils schlägt das Tor", "Bonusfeld", "Schiri läuft nur zwischen hellblauen Linien", "1. Herren verliert Auswärts", "Kein Timeout genommen", "Irgendwas mit Harz"],
-        damen: ["Damen werfen Lupfer", "Zweite Welle über 5 Stationen", "Coach ruft 'Doppeln!'", "Kampf um den Ball am Kreis", "Trikot vergessen", "Bank klatscht im Takt", "Bonusfeld", "7m wird eiskalt verwandelt", "Harzschlacht in der Halle", "Einwurf direkt ins Aus", "Traineransprache bei 20:5", "Team-Selfie nach dem Spiel", "Lange Diskussion mit dem Schiri", "Fünf Pässe – kein Wurf", "Rückraum wirft aus dem Stand", "Spielerin mit buntem Tape"]
-      }
-    };
-
     const standardPhrases = {
       "1. Bundesliga": ["Kempa-Tor 💥", "Rückraumhammer 🧨", "Perfekte Abwehrrotation 🔄", "Torwart-Parade 🧤", "Fragwürdiges Abspiel 🤔", "Strafwurf mit Dreher 🎯", "Videobeweis 🎥", "Tor in letzter Sekunde ⌛", "Fangesänge 🎶", "Trainer nimmt Auszeit ⏸️", "Blockmonster 🙅", "Handspiel Diskussion 🤷‍♂️", "Fliegender Wechsel 🔁", "TV-Zeitlupe 📺", "7-Meter wird gehalten 🧱", "Bonusfeld 🎉"],
       "Regionalliga": ["Rückraumfackel X", "Gelbe Karte wegen Meckern 🟨", "Heber 🎯", "Spieler bleibt liegen 🚨", "Torwart redet laut 🧤🗣️", "Tor nach unter 1 Minute ⏱️", "Tempogegenstoß ⌛", "Selber!🙋🏻‍♀️", "Kopf hoch ✊", "Über den Schiri meckern 🙄", "Wurf sehr weit übers Tor 🤦", "Trainer schreit rum 😡", "Klassischer Kreisanspiel 💡", "Zu viele Schritte 🚶", "Wurf an den Pfosten 🥴", "Bonusfeld 🎉"],
@@ -142,6 +130,13 @@
       "Bezirksliga": "Kreisklasse",
       "Kreisliga": "Kreisklasse",
       "Kreisklasse": "Kreisklasse"
+    };
+
+    const clubPhrases = {
+      "TVWERNE": {
+        herren: ["Jaegger wirft Heber", "Die 1 steht nicht im Tor", "Ohne Vorsagen", "Und nochmal hin und her", "Tempogegenstoß", "Domme 2 Minuten oder Rot", "Schüttel wirft 7 Meter", "Jakob fängt Ball nicht", "Harzfehler", "Thorsten macht nen Juri Knorr Gedächtniswurf", "Nils schlägt das Tor", "Bonusfeld", "Schiri läuft nur zwischen hellblauen Linien", "1. Herren verliert Auswärts", "Kein Timeout genommen", "Irgendwas mit Harz"],
+        damen: ["Damen werfen Lupfer", "Zweite Welle über 5 Stationen", "Coach ruft 'Doppeln!'", "Kampf um den Ball am Kreis", "Trikot vergessen", "Bank klatscht im Takt", "Bonusfeld", "7m wird eiskalt verwandelt", "Harzschlacht in der Halle", "Einwurf direkt ins Aus", "Traineransprache bei 20:5", "Team-Selfie nach dem Spiel", "Lange Diskussion mit dem Schiri", "Fünf Pässe – kein Wurf", "Rückraum wirft aus dem Stand", "Spielerin mit buntem Tape"]
+      }
     };
 
     const bingoPatterns = [
@@ -178,23 +173,29 @@
     }
 
     function renderClubGrid() {
+      const code = document.getElementById('vereinCodeInput').value.trim().toUpperCase();
       const team = document.getElementById('teamSelect').value;
-      const phrases = clubPhrases[vereinCode][team];
-      if (phrases) createGrid(phrases);
+      if (clubPhrases[code] && clubPhrases[code][team]) {
+        document.getElementById('logo').style.display = 'block';
+        document.getElementById('headline').textContent = 'DAS Handball-Bingo – ' + code;
+        createGrid(clubPhrases[code][team]);
+      }
     }
 
     function renderStandardGrid() {
       const league = document.getElementById('leagueSelect').value;
       const group = leagueToGroup[league];
-      const phrases = standardPhrases[group];
-      if (phrases) createGrid(phrases);
+      if (standardPhrases[group]) {
+        createGrid(standardPhrases[group]);
+      }
     }
 
-    if (vereinCode && clubPhrases[vereinCode]) {
-      document.getElementById('standardInput').style.display = 'none';
-      document.getElementById('teamSelection').style.display = 'block';
-      document.getElementById('logo').style.display = 'block';
-      document.getElementById('headline').textContent = 'DAS Handball-Bingo – ' + vereinCode;
+    function handleSelection() {
+      const value = document.getElementById('leagueSelect').value;
+      document.getElementById('vereinInput').style.display = value === 'verein' ? 'block' : 'none';
+      if (value !== 'verein' && value !== '') {
+        renderStandardGrid();
+      }
     }
   </script>
 </body>
