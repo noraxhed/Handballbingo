@@ -331,13 +331,23 @@
       document.getElementById('navMenu').style.display = 'none';
     }
 
-    function createGrid(phrases) {
+function createGrid(phrases) {
   const grid = document.getElementById('bingoGrid');
   grid.innerHTML = '';
 
   if (!phrases || phrases.length < 16) {
-    grid.innerHTML = '<div class="note">Bitte wähle eine Liga oder einen Vereinscode aus.</div>';
+    // Hinweis außerhalb des Grids anzeigen
+    const note = document.createElement('p');
+    note.className = 'note';
+    note.textContent = "Bitte wähle eine Liga oder einen Vereinscode aus.";
+    grid.parentNode.insertBefore(note, grid.nextSibling);
     return;
+  }
+
+  // Vorherige Hinweiszeile löschen, falls vorhanden
+  const nextElement = grid.nextElementSibling;
+  if (nextElement && nextElement.classList.contains('note')) {
+    nextElement.remove();
   }
 
   const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
