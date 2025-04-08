@@ -221,14 +221,20 @@
     </div>
 
     <p>Klick auf die Felder, um sie abzustreichen!</p>
-    <div class="grid" id="bingoGrid">Bitte wähle eine Liga oder einen Vereinscode aus.</div>
+   <div class="grid" id="bingoGrid">
+  <div class="note">Bitte wähle eine Liga oder einen Vereinscode aus.</div>
+</div>
 
-    <div class="donation-section">
-      <p>💚 Dir gefällt DAS Handball-Bingo?<br>Dann unterstütze das Projekt freiwillig und halte es am Leben:</p>
-      <a href="https://www.paypal.me/Noraxhed" target="_blank" class="donate-button">
-        💸 Jetzt unterstützen
-      </a>
-    </div>
+<div class="donation-section">
+  <p style="font-size: 1rem;">
+    💚 Dir gefällt DAS Handball-Bingo?<br>
+    Dann unterstütze das Projekt freiwillig und halte es am Leben:
+  </p>
+  <a href="https://www.paypal.me/Noraxhed" target="_blank" class="donate-button">
+    💸 Jetzt unterstützen
+  </a>
+</div>
+
   </div>
 
   <div id="infoSection">
@@ -326,20 +332,26 @@
     }
 
     function createGrid(phrases) {
-      const grid = document.getElementById('bingoGrid');
-      grid.innerHTML = '';
-      const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
-      shuffled.forEach((phrase) => {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.textContent = phrase;
-        cell.addEventListener('click', () => {
-          cell.classList.toggle('active');
-          checkBingo();
-        });
-        grid.appendChild(cell);
-      });
-    }
+  const grid = document.getElementById('bingoGrid');
+  grid.innerHTML = '';
+
+  if (!phrases || phrases.length < 16) {
+    grid.innerHTML = '<div class="note">Bitte wähle eine Liga oder einen Vereinscode aus.</div>';
+    return;
+  }
+
+  const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
+  shuffled.forEach((phrase) => {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.textContent = phrase;
+    cell.addEventListener('click', () => {
+      cell.classList.toggle('active');
+      checkBingo();
+    });
+    grid.appendChild(cell);
+  });
+}
 
     function checkBingo() {
       const cells = Array.from(document.querySelectorAll('.cell'));
