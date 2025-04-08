@@ -12,7 +12,7 @@
   <title>DAS Handball-Bingo</title>
   <style>
     :root {
-      --primary-color: #f9f9f9;
+      --primary-color: #ffffff;
       --secondary-color: #4caf50;
       --text-color: #000000;
       --grid-border-color: #ccc;
@@ -180,7 +180,6 @@
     }
   </style>
 </head>
-
 <body>
   <header>
     <h1 id="headline">DAS Handball-Bingo</h1>
@@ -224,8 +223,8 @@
     <p>Klick auf die Felder, um sie abzustreichen!</p>
     <div class="grid" id="bingoGrid">Bitte wähle eine Liga oder einen Vereinscode aus.</div>
 
-    <div style="margin-top: 2rem;">
-      <p style="font-size: 1rem;">💚 Dir gefällt DAS Handball-Bingo?<br>Dann unterstütze das Projekt freiwillig und halte es am Leben:</p>
+    <div class="donation-section">
+      <p>💚 Dir gefällt DAS Handball-Bingo?<br>Dann unterstütze das Projekt freiwillig und halte es am Leben:</p>
       <a href="https://www.paypal.me/Noraxhed" target="_blank" class="donate-button">
         💸 Jetzt unterstützen
       </a>
@@ -248,8 +247,7 @@
       <button type="submit">Absenden</button>
     </form>
   </div>
-
-  <script>
+ <script>
     const standardPhrases = {
       "1. Bundesliga": [
         "Kempa-Tor 💥", "Rückraumhammer 🧨", "Perfekte Abwehr 🔄", "Torwart-Parade 🧤",
@@ -287,40 +285,17 @@
     const clubPhrases = {
       TVWERNE: {
         herren: [
-          "Jaegger wirft Heber",
-          "Die 1 steht nicht im Tor",
-          "Ohne Vorsagen",
-          "Und nochmal hin und her",
-          "Tempogegenstoß",
-          "Domme 2 Minuten oder Rot",
-          "Schüttel wirft 7 Meter",
-          "Jakob fängt Ball nicht",
-          "Harzfehler",
-          "Thorsten macht nen Juri Knorr Gedächtniswurf",
-          "Nils schlägt das Tor",
-          "Bonusfeld",
-          "Schiri läuft nur zwischen hellblauen Linien",
-          "1. Herren verliert Auswärts",
-          "Kein Timeout genommen",
-          "Irgendwas mit Harz"
+          "Jaegger wirft Heber", "Die 1 steht nicht im Tor", "Ohne Vorsagen", "Und nochmal hin und her",
+          "Tempogegenstoß", "Domme 2 Minuten oder Rot", "Schüttel wirft 7 Meter", "Jakob fängt Ball nicht",
+          "Harzfehler", "Thorsten macht nen Juri Knorr Gedächtniswurf", "Nils schlägt das Tor", "Bonusfeld",
+          "Schiri läuft nur zwischen hellblauen Linien", "1. Herren verliert Auswärts", "Kein Timeout genommen", "Irgendwas mit Harz"
         ],
         damen: [
-          "Damen werfen Lupfer",
-          "Zweite Welle über 5 Stationen",
-          "Coach ruft 'Doppeln!'",
-          "Kampf um den Ball am Kreis",
-          "Trikot vergessen",
-          "Bank klatscht im Takt",
-          "Bonusfeld",
-          "7m wird eiskalt verwandelt",
-          "Harzschlacht in der Halle",
-          "Einwurf direkt ins Aus",
-          "Traineransprache bei 20:5",
-          "Team-Selfie nach dem Spiel",
-          "Lange Diskussion mit dem Schiri",
-          "Fünf Pässe – kein Wurf",
-          "Rückraum wirft aus dem Stand",
-          "Spielerin mit buntem Tape"
+          "Damen werfen Lupfer", "Zweite Welle über 5 Stationen", "Coach ruft 'Doppeln!'", "Kampf um den Ball am Kreis",
+          "Trikot vergessen", "Bank klatscht im Takt", "Bonusfeld", "7m wird eiskalt verwandelt",
+          "Harzschlacht in der Halle", "Einwurf direkt ins Aus", "Traineransprache bei 20:5",
+          "Team-Selfie nach dem Spiel", "Lange Diskussion mit dem Schiri", "Fünf Pässe – kein Wurf",
+          "Rückraum wirft aus dem Stand", "Spielerin mit buntem Tape"
         ]
       }
     };
@@ -331,6 +306,7 @@
         logo: "logos/Logo_TVWERNE.svg"
       }
     };
+
     const bingoPatterns = [
       [0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15],
       [0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15],
@@ -352,10 +328,6 @@
     function createGrid(phrases) {
       const grid = document.getElementById('bingoGrid');
       grid.innerHTML = '';
-      if (!phrases || phrases.length < 16) {
-        grid.innerHTML = '<p>Keine gültigen Bingo-Phrasen gefunden.</p>';
-        return;
-      }
       const shuffled = phrases.sort(() => 0.5 - Math.random()).slice(0, 16);
       shuffled.forEach((phrase) => {
         const cell = document.createElement('div');
