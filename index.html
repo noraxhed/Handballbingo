@@ -434,6 +434,15 @@ function createGrid(phrases) {
         document.getElementById('headline').textContent = "DAS Handball-Bingo";
       }
     }
+   document.getElementById("refreshButton").addEventListener("click", () => {
+  const selected = document.getElementById("leagueSelect").value;
+
+  if (selected === "verein") {
+    renderClubGrid();
+  } else if (selected !== "") {
+    renderStandardGrid();
+  }
+});
   </script>
 </body>
 </html>
