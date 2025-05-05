@@ -207,29 +207,32 @@
 
   <div id="bingoSection">
     <div>
-      <p>Wähle die Liga oder Vereinsbingo:</p>
-      <select id="leagueSelect" onchange="handleSelection()">
-        <option value="">Bitte wählen ...</option>
-        <option value="verein">🎽 Vereinsbingo</option>
-        <option value="1. Bundesliga">1. Bundesliga</option>
-        <option value="2. Bundesliga">2. Bundesliga</option>
-        <option value="3. Liga">3. Liga</option>
-        <option value="Regionalliga">Regionalliga</option>
-        <option value="Oberliga">Oberliga</option>
-        <option value="Verbandsliga">Verbandsliga</option>
-        <option value="Bezirksliga">Bezirksliga</option>
-        <option value="Kreisliga">Kreisliga</option>
-        <option value="Kreisklasse">Kreisklasse</option>
-      </select>
-      <div id="vereinInput" style="display:none;">
-        <input type="text" id="vereinCodeInput" placeholder="Vereinscode eingeben" oninput="renderClubGrid()" />
-        <select id="teamSelect" onchange="renderClubGrid()">
-          <option value="herren">Herren</option>
-          <option value="damen">Damen</option>
-        </select>
-        <div id="vereinError"></div>
-      </div>
-    </div>
+      <p style="margin-bottom: 0.3rem;">Wähle die Liga oder Vereinsbingo:</p>
+<div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+  <button id="refreshButton" class="refresh-icon-button" title="Neu mischen">🔁</button>
+  <select id="leagueSelect" onchange="handleSelection()">
+    <option value="">Bitte wählen ...</option>
+    <option value="verein">🎽 Vereinsbingo</option>
+    <option value="1. Bundesliga">1. Bundesliga</option>
+    <option value="2. Bundesliga">2. Bundesliga</option>
+    <option value="3. Liga">3. Liga</option>
+    <option value="Regionalliga">Regionalliga</option>
+    <option value="Oberliga">Oberliga</option>
+    <option value="Verbandsliga">Verbandsliga</option>
+    <option value="Bezirksliga">Bezirksliga</option>
+    <option value="Kreisliga">Kreisliga</option>
+    <option value="Kreisklasse">Kreisklasse</option>
+  </select>
+</div>
+
+<div id="vereinInput" style="display:none;">
+  <input type="text" id="vereinCodeInput" placeholder="Vereinscode eingeben" oninput="renderClubGrid()" />
+  <select id="teamSelect" onchange="renderClubGrid()">
+    <option value="herren">Herren</option>
+    <option value="damen">Damen</option>
+  </select>
+  <div id="vereinError"></div>
+</div>
 
     <p>Klick auf die Felder, um sie abzustreichen!</p>
    <div class="grid" id="bingoGrid">
